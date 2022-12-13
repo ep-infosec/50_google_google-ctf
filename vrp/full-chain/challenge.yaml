@@ -1,0 +1,27 @@
+apiVersion: kctf.dev/v1
+kind: Challenge
+metadata:
+  name: full-chain
+spec:
+  deployed: true
+  powDifficultySeconds: 0
+  network:
+    public: false
+  healthcheck:
+    enabled: false
+  podTemplate:
+    template:
+      spec:
+        containers:
+          - name: challenge
+            volumeMounts:
+              - mountPath: /flag
+                name: flag
+                readOnly: true
+        volumes:
+          - name: flag
+            secret:
+              defaultMode: 0555
+              secretName: full-chain-flag
+              optional: true
+  image: eu.gcr.io/gctf-vrp/full-chain-challenge:cccdac6eed8cf69db501c02e3595c64221391647a98feda02273c504d408cea6

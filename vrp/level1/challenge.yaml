@@ -1,0 +1,48 @@
+apiVersion: kctf.dev/v1
+kind: Challenge
+metadata:
+  name: kctf
+spec:
+  deployed: true
+  powDifficultySeconds: 1
+  network:
+    public: true
+  healthcheck:
+    enabled: true
+    image: eu.gcr.io/gctf-vrp/kctf-healthcheck:ba3b7b5b6e67d1cf29e43748113a4ad7f9b5c81f5c2e22e28cd0d093cf2d4cde
+  podTemplate:
+    template:
+      spec:
+        containers:
+          - name: challenge
+            volumeMounts:
+              - name: flag
+                mountPath: /flag
+                readOnly: true
+              - name: image
+                mountPath: /etc/node-image
+                readOnly: true
+              - name: boot
+                mountPath: /node-boot
+                readOnly: true
+              - name: etc-os-release
+                mountPath: /etc/node-os-release
+                readOnly: true
+        volumes:
+          - name: etc-os-release
+            hostPath:
+              path: /etc/os-release
+          - name: boot
+            hostPath:
+              path: /boot
+          - name: image
+            secret:
+              defaultMode: 0555
+              secretName: node-image
+              optional: true
+          - name: flag
+            secret:
+              defaultMode: 0555
+              secretName: kctf-flag
+              optional: true
+  image: eu.gcr.io/gctf-vrp/kctf-challenge:8d0af05e0b294b10c9afc66a542dbeb728e1742a27fa2ebfc28c0acebfa064bb
